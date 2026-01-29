@@ -27,6 +27,6 @@ public class Schedule {
 
     private LocalDate date;
     private LocalTime time;
-    private boolean available;
+    private boolean available = true;
 
 }
