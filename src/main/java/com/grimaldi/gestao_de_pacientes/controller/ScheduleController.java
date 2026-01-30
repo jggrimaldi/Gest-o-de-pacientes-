@@ -2,6 +2,7 @@ package com.grimaldi.gestao_de_pacientes.controller;
 
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
+import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,9 @@ public class ScheduleController {
     public ScheduleService service;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponse>add(@RequestBody ScheduleRequest request){
-        Schedule schedule = new Schedule(
-                null,request.date(),request.time(),false);
+    public ResponseEntity<ScheduleResponse> add(@RequestBody ScheduleRequest request){
 
-        Schedule save = service.addSchedule(schedule);
+        Schedule save = service.addSchedule(request);
 
         ScheduleResponse response = new ScheduleResponse(
                 save.getId(), save.getDate(), save.getTime(), save.isAvailable());
@@ -49,6 +48,13 @@ public class ScheduleController {
                         schedule.getId(), schedule.getDate(), schedule.getTime(), schedule.isAvailable()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ScheduleResponse> update(@PathVariable UUID id, @RequestBody UpdateScheduleRequest updateRequest) {
+        ScheduleResponse response = service.update(id, updateRequest);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -2,11 +2,11 @@ package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
-import com.grimaldi.gestao_de_pacientes.service.validation.ScheduleValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidateDateAndTimeImpl implements ScheduleValidation {
+public class ValidateDateAndTimeImpl implements CreateScheduleValidation {
 
     private final ScheduleRepository scheduleRepository;
 

@@ -1,10 +1,14 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
+import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
+import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
+import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
-import com.grimaldi.gestao_de_pacientes.service.validation.DeleteValidation;
-import com.grimaldi.gestao_de_pacientes.service.validation.ScheduleValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.UpdateScheduleValidation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,20 +19,23 @@ import java.util.UUID;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final List<ScheduleValidation> scheduleValidations;
-    private final List<DeleteValidation> DeleteValidations;
+    private final List<CreateScheduleValidation> createScheduleValidations;
+    private final List<IdValidation> idValidations;
+    private final List<UpdateScheduleValidation> updateScheduleValidations;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, List<ScheduleValidation> scheduleValidations) {
+    public ScheduleService(ScheduleRepository scheduleRepository, List<CreateScheduleValidation> createScheduleValidations, List<IdValidation> idValidations, List<UpdateScheduleValidation> updateScheduleValidations) {
         this.scheduleRepository = scheduleRepository;
-        this.scheduleValidations = scheduleValidations;
+        this.createScheduleValidations = createScheduleValidations;
+        this.idValidations = idValidations;
+        this.updateScheduleValidations = updateScheduleValidations;
     }
 
-    public Schedule addSchedule(Schedule schedule) {
+    public Schedule addSchedule(ScheduleRequest request) {
         //Percorre a lista de validações validando tudo
-        scheduleValidations.forEach(v -> v.validate(schedule));
+        createScheduleValidations.forEach(v -> v.validate(request));
 
-        //ao criar fica disponivel
-        schedule.setAvailable(true);
+        Schedule schedule = new Schedule(null, request.date(), request.time(), true);
+
         return scheduleRepository.save(schedule);
     }
 
@@ -56,12 +63,31 @@ public class ScheduleService {
     }
 
     //pode o não existir o id
+    //Optional
     public Optional<Schedule> findById(UUID id) {
         return scheduleRepository.findById(id);
     }
 
+    public ScheduleResponse update(UUID id, UpdateScheduleRequest newSchedule) {
+        idValidations.forEach(v -> v.validate(id));
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        updateScheduleValidations.forEach(v -> v.validate(newSchedule));
+
+        if(newSchedule.date() != null) {
+            schedule.setDate(newSchedule.date());
+        }
+        if (newSchedule.time() != null) {
+            schedule.setTime(newSchedule.time());
+        }
+
+        return new ScheduleResponse(scheduleRepository.save(schedule));
+    }
+
+    //deletar horario
     public void delete(UUID id) {
-        DeleteValidations.forEach(v -> v.validate(id));
+        idValidations.forEach(v -> v.validate(id));
         scheduleRepository.deleteById(id);
     }
 }
