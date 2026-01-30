@@ -2,12 +2,14 @@ package com.grimaldi.gestao_de_pacientes.service;
 
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
+import com.grimaldi.gestao_de_pacientes.dto.UpdateAvailableRequest;
 import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.UpdateAvailableValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.UpdateScheduleValidation;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,14 @@ public class ScheduleService {
     private final List<CreateScheduleValidation> createScheduleValidations;
     private final List<IdValidation> idValidations;
     private final List<UpdateScheduleValidation> updateScheduleValidations;
+    private final List<UpdateAvailableValidation> updateAvailableValidations;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, List<CreateScheduleValidation> createScheduleValidations, List<IdValidation> idValidations, List<UpdateScheduleValidation> updateScheduleValidations) {
+    public ScheduleService(ScheduleRepository scheduleRepository, List<CreateScheduleValidation> createScheduleValidations, List<IdValidation> idValidations, List<UpdateScheduleValidation> updateScheduleValidations, List<UpdateAvailableRequest> updateAvailableRequests, List<UpdateAvailableValidation> updateAvailableValidations) {
         this.scheduleRepository = scheduleRepository;
         this.createScheduleValidations = createScheduleValidations;
         this.idValidations = idValidations;
         this.updateScheduleValidations = updateScheduleValidations;
+        this.updateAvailableValidations = updateAvailableValidations;
     }
 
     public Schedule addSchedule(ScheduleRequest request) {
@@ -85,11 +89,11 @@ public class ScheduleService {
         return new ScheduleResponse(scheduleRepository.save(oldSchedule));
     }
 
-    public ScheduleResponse updateAvailable(UUID id, UpdateScheduleRequest request) {
+    public ScheduleResponse updateAvailable(UUID id, UpdateAvailableRequest request) {
         Schedule oldschedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        updateScheduleValidations.forEach(v -> v.validate(request));
+        updateAvailableValidations.forEach(v -> v.validate(request));
 
         oldschedule.setAvailable(request.available());
 
