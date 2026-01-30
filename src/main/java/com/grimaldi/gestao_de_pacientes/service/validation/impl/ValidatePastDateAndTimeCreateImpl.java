@@ -10,7 +10,6 @@ import java.time.LocalTime;
 
 public class ValidatePastDateAndTimeCreateImpl implements CreateScheduleValidation {
 
-    private ScheduleRepository scheduleRepository;
 
     @Override
     public void validate(ScheduleRequest request) {

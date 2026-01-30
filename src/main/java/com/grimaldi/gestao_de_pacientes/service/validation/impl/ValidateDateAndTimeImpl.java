@@ -1,5 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
+import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
@@ -15,9 +16,9 @@ public class ValidateDateAndTimeImpl implements CreateScheduleValidation {
     }
 
     @Override
-    public void validate(Schedule schedule) {
+    public void validate(ScheduleRequest request) {
         boolean exists = scheduleRepository
-                .existsByDateAndTime(schedule.getDate(), schedule.getTime());
+                .existsByDateAndTime(request.date(), request.time());
 
         if (exists) {
             throw new RuntimeException("Horario já está ocupado");

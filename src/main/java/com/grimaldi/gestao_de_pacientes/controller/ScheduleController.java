@@ -57,6 +57,13 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping(value = "/{id}/disponibilidade")
+    public ResponseEntity<ScheduleResponse> availableUpdate(@PathVariable UUID id, @RequestBody UpdateScheduleRequest updateAvailableRequest) {
+        ScheduleResponse response = service.updateAvailable(id, updateAvailableRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);

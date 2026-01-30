@@ -34,6 +34,7 @@ public class ScheduleService {
         //Percorre a lista de validações validando tudo
         createScheduleValidations.forEach(v -> v.validate(request));
 
+        //transforma o DTO em na entidade
         Schedule schedule = new Schedule(null, request.date(), request.time(), true);
 
         return scheduleRepository.save(schedule);
@@ -69,20 +70,30 @@ public class ScheduleService {
     }
 
     public ScheduleResponse update(UUID id, UpdateScheduleRequest newSchedule) {
-        idValidations.forEach(v -> v.validate(id));
-        Schedule schedule = scheduleRepository.findById(id)
+        Schedule oldSchedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
         updateScheduleValidations.forEach(v -> v.validate(newSchedule));
 
         if(newSchedule.date() != null) {
-            schedule.setDate(newSchedule.date());
+            oldSchedule.setDate(newSchedule.date());
         }
         if (newSchedule.time() != null) {
-            schedule.setTime(newSchedule.time());
+            oldSchedule.setTime(newSchedule.time());
         }
 
-        return new ScheduleResponse(scheduleRepository.save(schedule));
+        return new ScheduleResponse(scheduleRepository.save(oldSchedule));
+    }
+
+    public ScheduleResponse updateAvailable(UUID id, UpdateScheduleRequest request) {
+        Schedule oldschedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        updateScheduleValidations.forEach(v -> v.validate(request));
+
+        oldschedule.setAvailable(request.available());
+
+        return new ScheduleResponse(scheduleRepository.save(oldschedule));
     }
 
     //deletar horario
