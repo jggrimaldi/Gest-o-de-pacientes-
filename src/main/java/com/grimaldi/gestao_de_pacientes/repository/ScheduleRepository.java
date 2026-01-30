@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
 
     boolean existsByDateAndTime(LocalDate date, LocalTime time);
+
+    boolean existsById(UUID id);
 }

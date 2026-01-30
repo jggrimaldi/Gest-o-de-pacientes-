@@ -3,25 +3,29 @@ package com.grimaldi.gestao_de_pacientes.service;
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
-import com.grimaldi.gestao_de_pacientes.service.validation.Validation;
+import com.grimaldi.gestao_de_pacientes.service.validation.DeleteValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.ScheduleValidation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final List<Validation> validations;
+    private final List<ScheduleValidation> scheduleValidations;
+    private final List<DeleteValidation> DeleteValidations;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, List<Validation> validations) {
+    public ScheduleService(ScheduleRepository scheduleRepository, List<ScheduleValidation> scheduleValidations) {
         this.scheduleRepository = scheduleRepository;
-        this.validations = validations;
+        this.scheduleValidations = scheduleValidations;
     }
 
     public Schedule addSchedule(Schedule schedule) {
         //Percorre a lista de validações validando tudo
-        validations.forEach(v -> v.validate(schedule));
+        scheduleValidations.forEach(v -> v.validate(schedule));
 
         //ao criar fica disponivel
         schedule.setAvailable(true);
@@ -45,9 +49,19 @@ public class ScheduleService {
         //esteira de dados
         return schedules.stream()
                 //filtro true
-                .filter(schedule -> schedule.isAvailable())
+                .filter(Schedule::isAvailable)
                 //Para cada Schedule que passou no filtro ➡ cria um ScheduleResponse
                 .map(ScheduleResponse::new)
                 .toList();
+    }
+
+    //pode o não existir o id
+    public Optional<Schedule> findById(UUID id) {
+        return scheduleRepository.findById(id);
+    }
+
+    public void delete(UUID id) {
+        DeleteValidations.forEach(v -> v.validate(id));
+        scheduleRepository.deleteById(id);
     }
 }

@@ -9,30 +9,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/horarios")
 public class ScheduleController {
 
     @Autowired
     public ScheduleService service;
 
     @PostMapping
-    public ResponseEntity<Void> add(@RequestBody ScheduleRequest request){
-        Schedule schedule = new Schedule(null,request.date(),request.time(),false);
+    public ResponseEntity<ScheduleResponse>add(@RequestBody ScheduleRequest request){
+        Schedule schedule = new Schedule(
+                null,request.date(),request.time(),false);
 
-        service.addSchedule(schedule);
+        Schedule save = service.addSchedule(schedule);
 
-        return ResponseEntity.status(201).build();
+        ScheduleResponse response = new ScheduleResponse(
+                save.getId(), save.getDate(), save.getTime(), save.isAvailable());
+
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping
-    public List<ScheduleResponse> findAll() {
-        return service.findAll();
+    public ResponseEntity<List<ScheduleResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping(value = "/available")
-    public List<ScheduleResponse> findAllAvailable() {
-        return service.findAvailable();
+    @GetMapping("/disponivel")
+    public ResponseEntity<List<ScheduleResponse>> findAllAvailable() {
+        return ResponseEntity.ok(service.findAvailable());
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ScheduleResponse> findById(@PathVariable UUID id) {
+        return service.findById(id)
+                .map(schedule -> new ScheduleResponse(
+                        schedule.getId(), schedule.getDate(), schedule.getTime(), schedule.isAvailable()))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
