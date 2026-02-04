@@ -2,6 +2,7 @@ package com.grimaldi.gestao_de_pacientes.controller;
 
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
+import com.grimaldi.gestao_de_pacientes.dto.UpdateAvailableRequest;
 import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.service.ScheduleService;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -50,16 +50,16 @@ public class ScheduleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ScheduleResponse> update(@PathVariable UUID id, @RequestBody UpdateScheduleRequest updateRequest) {
-        ScheduleResponse response = service.update(id, updateRequest);
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<ScheduleResponse> partialUpdate(@PathVariable UUID id, @RequestBody UpdateScheduleRequest updateRequest) {
+        ScheduleResponse response = service.partialUpdate(id, updateRequest);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping(value = "/{id}/disponibilidade")
-    public ResponseEntity<ScheduleResponse> availableUpdate(@PathVariable UUID id, @RequestBody UpdateScheduleRequest updateAvailableRequest) {
-        ScheduleResponse response = service.updateAvailable(id, updateAvailableRequest);
+    public ResponseEntity<ScheduleResponse> availableUpdate(@PathVariable UUID id, @RequestBody UpdateAvailableRequest updateRequest) {
+        ScheduleResponse response = service.updateAvailable(id, updateRequest);
 
         return ResponseEntity.ok(response);
     }

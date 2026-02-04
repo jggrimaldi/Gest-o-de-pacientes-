@@ -1,6 +1,7 @@
 package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
 import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
+import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.exception.PastDateAndTimeException;
 import com.grimaldi.gestao_de_pacientes.service.validation.UpdateScheduleValidation;
 import org.springframework.stereotype.Component;
@@ -12,22 +13,26 @@ import java.time.LocalTime;
 public class ValidatePastDateAndTimeUpdateImpl implements UpdateScheduleValidation {
 
     @Override
-    public void validate(UpdateScheduleRequest request) {
-        //data não nula
-        if(request.date() != null) {
+    public void validate(UpdateScheduleRequest request, Schedule currentSchedule) {
 
-            //data no passado
-            if (request.date().isBefore(LocalDate.now())) {
-                throw new PastDateAndTimeException("Data inválida");
+        LocalDate finalDate =
+                request.date() != null
+                        ? request.date()
+                        : currentSchedule.getDate();
 
-            }
-            //data hj, com tempo no passado
-            if (request.date().isEqual(LocalDate.now())
-                    && request.time() != null
-                    && request.time().isBefore(LocalTime.now())) {
-                throw new PastDateAndTimeException("Hora inválida");
+        LocalTime finalTime =
+                request.time() != null
+                        ? request.time()
+                        : currentSchedule.getTime();
 
-            }
+        if (finalDate.isBefore(LocalDate.now())) {
+            throw new PastDateAndTimeException("Data inválida");
+        }
+
+        if (finalDate.isEqual(LocalDate.now())
+                && finalTime != null
+                && finalTime.isBefore(LocalTime.now())) {
+            throw new PastDateAndTimeException("Hora inválida");
         }
     }
 }

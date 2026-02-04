@@ -6,6 +6,7 @@ import com.grimaldi.gestao_de_pacientes.dto.UpdateAvailableRequest;
 import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
+import com.grimaldi.gestao_de_pacientes.exception.PastDateAndTimeException;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
@@ -13,6 +14,8 @@ import com.grimaldi.gestao_de_pacientes.service.validation.UpdateAvailableValida
 import com.grimaldi.gestao_de_pacientes.service.validation.UpdateScheduleValidation;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,17 +77,29 @@ public class ScheduleService {
     }
 
     public ScheduleResponse update(UUID id, UpdateScheduleRequest newSchedule) {
+
         Schedule oldSchedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        updateScheduleValidations.forEach(v -> v.validate(newSchedule));
+        // chama TODAS as validações de update
+        updateScheduleValidations.forEach(v ->
+                v.validate(newSchedule, oldSchedule)
+        );
 
-        if(newSchedule.date() != null) {
-            oldSchedule.setDate(newSchedule.date());
-        }
-        if (newSchedule.time() != null) {
-            oldSchedule.setTime(newSchedule.time());
-        }
+        //Se não passar nada fica com o antigo
+        LocalDate finalDate =
+                newSchedule.date() != null
+                        ? newSchedule.date()
+                        : oldSchedule.getDate();
+
+        //Se não passar nada fica com o antigo
+        LocalTime finalTime =
+                newSchedule.time() != null
+                        ? newSchedule.time()
+                        : oldSchedule.getTime();
+
+        oldSchedule.setDate(finalDate);
+        oldSchedule.setTime(finalTime);
 
         return new ScheduleResponse(scheduleRepository.save(oldSchedule));
     }

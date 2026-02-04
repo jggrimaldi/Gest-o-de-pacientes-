@@ -2,12 +2,13 @@ package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
 import com.grimaldi.gestao_de_pacientes.dto.ScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.exception.PastDateAndTimeException;
-import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Component
 public class ValidatePastDateAndTimeCreateImpl implements CreateScheduleValidation {
 
 
