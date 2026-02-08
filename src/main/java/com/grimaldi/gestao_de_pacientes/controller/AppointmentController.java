@@ -1,0 +1,29 @@
+package com.grimaldi.gestao_de_pacientes.controller;
+
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
+import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping(value = "/consultas")
+public class AppointmentController {
+
+    private AppointmentService appointmentService;
+
+    @PostMapping("/{scheduleId}")
+    public ResponseEntity<AppointmentResponse> CreatAppointment(@PathVariable UUID scheduleId) {
+        Appointment appointment = appointmentService.creatAppointment(scheduleId);
+
+        AppointmentResponse response = new AppointmentResponse(
+                appointment.getId(), appointment.getSchedule().getDate(), appointment.getSchedule().getTime(), appointment.getStatus(), scheduleId);
+
+        return ResponseEntity.status(201).body(response);
+    }
+}

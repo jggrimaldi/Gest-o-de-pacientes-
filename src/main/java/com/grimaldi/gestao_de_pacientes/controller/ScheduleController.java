@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/horarios")
 public class ScheduleController {
 
-    @Autowired
+
     public ScheduleService service;
 
     @PostMapping

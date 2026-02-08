@@ -83,7 +83,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponse update(UUID id, UpdateScheduleRequest newSchedule) {
+    public ScheduleResponse partialUpdate(UUID id, UpdateScheduleRequest newSchedule) {
 
         Schedule oldSchedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
