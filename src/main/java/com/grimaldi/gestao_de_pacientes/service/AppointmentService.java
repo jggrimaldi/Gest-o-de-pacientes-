@@ -1,5 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
@@ -8,7 +9,8 @@ import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -40,5 +42,16 @@ public class AppointmentService {
         scheduleRepository.save(schedule);
 
         return appointmentRepository.save(appointment);
-        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findAll() {
+        //Busca no banco
+        List<Appointment> appointments = appointmentRepository.findAll();
+
+        //transforma a entidade em novos objetos Response e devolve para lista
+        return appointments.stream()
+                .map(AppointmentResponse::new)
+                .toList();
+    }
 }

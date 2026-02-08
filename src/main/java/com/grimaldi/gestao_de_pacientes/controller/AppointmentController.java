@@ -4,11 +4,9 @@ import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,4 +24,10 @@ public class AppointmentController {
 
         return ResponseEntity.status(201).body(response);
     }
+
+    @GetMapping
+    public ResponseEntity<List<AppointmentResponse>> findAll() {
+        return ResponseEntity.ok(appointmentService.findAll());
+    }
 }
+
