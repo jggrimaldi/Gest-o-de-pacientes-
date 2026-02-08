@@ -12,7 +12,9 @@ import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateScheduleValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.UpdateAvailableValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.UpdateScheduleValidation;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,6 +39,7 @@ public class ScheduleService {
         this.updateAvailableValidations = updateAvailableValidations;
     }
 
+    @Transactional
     public Schedule addSchedule(ScheduleRequest request) {
         //Percorre a lista de validações validando tudo
         createScheduleValidations.forEach(v -> v.validate(request));
@@ -47,6 +50,7 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
+    @Transactional(readOnly = true)
     public List<ScheduleResponse> findAll() {
         //Busca no banco
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -57,6 +61,7 @@ public class ScheduleService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ScheduleResponse> findAvailable() {
 
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -72,10 +77,12 @@ public class ScheduleService {
 
     //pode o não existir o id
     //Optional
+    @Transactional(readOnly = true)
     public Optional<Schedule> findById(UUID id) {
         return scheduleRepository.findById(id);
     }
 
+    @Transactional
     public ScheduleResponse update(UUID id, UpdateScheduleRequest newSchedule) {
 
         Schedule oldSchedule = scheduleRepository.findById(id)
@@ -104,6 +111,7 @@ public class ScheduleService {
         return new ScheduleResponse(scheduleRepository.save(oldSchedule));
     }
 
+    @Transactional
     public ScheduleResponse updateAvailable(UUID id, UpdateAvailableRequest request) {
         Schedule oldschedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
@@ -116,6 +124,7 @@ public class ScheduleService {
     }
 
     //deletar horario
+    @Transactional
     public void delete(UUID id) {
         idValidations.forEach(v -> v.validate(id));
         scheduleRepository.deleteById(id);
