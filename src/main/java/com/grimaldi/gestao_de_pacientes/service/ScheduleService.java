@@ -126,7 +126,8 @@ public class ScheduleService {
     //deletar horario
     @Transactional
     public void delete(UUID id) {
-        idValidations.forEach(v -> v.validate(id));
-        scheduleRepository.deleteById(id);
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+        scheduleRepository.delete(schedule);
     }
 }
