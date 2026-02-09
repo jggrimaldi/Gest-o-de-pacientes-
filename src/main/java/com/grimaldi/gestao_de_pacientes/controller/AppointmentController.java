@@ -29,5 +29,6 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentResponse>> findAll() {
         return ResponseEntity.ok(appointmentService.findAll());
     }
+
 }
 

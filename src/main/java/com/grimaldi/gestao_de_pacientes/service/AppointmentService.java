@@ -9,6 +9,7 @@ import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.StatusPendingValidation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -18,12 +19,14 @@ import java.util.UUID;
 public class AppointmentService {
 
     private final List<CreateAppointmentValidation> createAppointmentValidations;
+    private final List<StatusPendingValidation> statusPendingValidations;
     private final List<IdValidation> idValidations;
     private AppointmentRepository appointmentRepository;
     private ScheduleRepository scheduleRepository;
 
-    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<IdValidation> idValidations) {
+    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, List<IdValidation> idValidations) {
         this.createAppointmentValidations = createAppointmentValidations;
+        this.statusPendingValidations = statusPendingValidations;
         this.idValidations = idValidations;
     }
 
@@ -53,5 +56,16 @@ public class AppointmentService {
         return appointments.stream()
                 .map(AppointmentResponse::new)
                 .toList();
+    }
+
+    @Transactional
+    public AppointmentResponse confirmAppointment(UUID appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        statusPendingValidations.forEach(v -> v.validate(appointment));
+
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        return new AppointmentResponse(appointmentRepository.save(appointment));
     }
 }
