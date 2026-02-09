@@ -69,4 +69,12 @@ public class AppointmentService {
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
 
+    @Transactional
+    public void delete(UUID appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        appointment.getSchedule().setAvailable(true);
+        appointmentRepository.delete(appointment);
+    }
 }
