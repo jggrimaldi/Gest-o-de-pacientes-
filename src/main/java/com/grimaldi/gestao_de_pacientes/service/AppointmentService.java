@@ -68,4 +68,5 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
+
 }
