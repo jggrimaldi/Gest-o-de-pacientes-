@@ -1,6 +1,7 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
+import com.grimaldi.gestao_de_pacientes.dto.ScheduleResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
@@ -57,6 +58,14 @@ public class AppointmentService {
         return appointments.stream()
                 .map(AppointmentResponse::new)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public AppointmentResponse findById(UUID appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        return new AppointmentResponse(appointment);
     }
 
     @Transactional(readOnly = true)
