@@ -36,6 +36,10 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAgenda(startDate,endDate));
     }
 
+    @GetMapping("/{appointmentId}")
+    public ResponseEntity<AppointmentResponse> findById(@PathVariable UUID appointmentId) {
+        return ResponseEntity.ok(appointmentService.findById(appointmentId));
+    }
     @PatchMapping("/{appointmentId}")
     public ResponseEntity<AppointmentResponse> confirmAppointment(@PathVariable UUID appointmentId) {
         return ResponseEntity.ok(appointmentService.confirmAppointment(appointmentId));
