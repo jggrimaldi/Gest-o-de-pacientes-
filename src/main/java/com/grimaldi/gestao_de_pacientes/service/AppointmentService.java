@@ -13,6 +13,7 @@ import com.grimaldi.gestao_de_pacientes.service.validation.StatusPendingValidati
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +55,17 @@ public class AppointmentService {
 
         //transforma a entidade em novos objetos Response e devolve para lista
         return appointments.stream()
+                .map(AppointmentResponse::new)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
+        List<AppointmentStatus> validStatus = List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED);
+
+        List<Appointment> agenda = appointmentRepository.findByDateBetweenAndStatusIn(startDate, endDate, validStatus);
+
+        return agenda.stream()
                 .map(AppointmentResponse::new)
                 .toList();
     }

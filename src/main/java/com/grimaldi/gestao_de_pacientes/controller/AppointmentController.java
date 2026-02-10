@@ -6,6 +6,7 @@ import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,11 @@ public class AppointmentController {
     @GetMapping
     public ResponseEntity<List<AppointmentResponse>> findAll() {
         return ResponseEntity.ok(appointmentService.findAll());
+    }
+
+    @GetMapping("/agenda")
+    public ResponseEntity<List<AppointmentResponse>> getAgenda(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        return ResponseEntity.ok(appointmentService.getAgenda(startDate,endDate));
     }
 
     @PatchMapping("/{appointmentId}")
