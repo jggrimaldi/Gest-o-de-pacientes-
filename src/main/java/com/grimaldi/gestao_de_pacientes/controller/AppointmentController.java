@@ -3,6 +3,7 @@ package com.grimaldi.gestao_de_pacientes.controller;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,10 @@ import java.util.UUID;
 public class AppointmentController {
 
     private AppointmentService appointmentService;
+
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
 
     @PostMapping("/{scheduleId}")
     public ResponseEntity<AppointmentResponse> CreatAppointment(@PathVariable UUID scheduleId) {

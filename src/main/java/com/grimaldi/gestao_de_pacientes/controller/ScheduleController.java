@@ -17,8 +17,11 @@ import java.util.UUID;
 @RequestMapping("/horarios")
 public class ScheduleController {
 
-
     public ScheduleService service;
+
+    public ScheduleController(ScheduleService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<ScheduleResponse> add(@RequestBody ScheduleRequest request){
