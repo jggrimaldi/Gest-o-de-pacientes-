@@ -26,7 +26,10 @@ public class Appointment {
     @Id
     @GeneratedValue
     private UUID id;
-    private UUID pacientId;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @OneToOne
     @JoinColumn(name = "schedule_id", unique = true)
@@ -43,8 +46,5 @@ public class Appointment {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-
-
 
 }
