@@ -15,5 +15,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
             LocalDate endDate,
             List<AppointmentStatus> status
     );
+
+    boolean existsByPatientIdAndScheduleId(UUID patientId, UUID scheduleId);
     }
 

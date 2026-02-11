@@ -2,10 +2,12 @@ package com.grimaldi.gestao_de_pacientes.service;
 
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
+import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
@@ -26,25 +28,32 @@ public class AppointmentService {
     private final List<IdValidation> idValidations;
     private final AppointmentRepository appointmentRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PatientRepository patientRepository;
 
-    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, List<IdValidation> idValidations, AppointmentRepository appointmentRepository, ScheduleRepository scheduleRepository) {
+    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, List<IdValidation> idValidations, AppointmentRepository appointmentRepository, ScheduleRepository scheduleRepository, PatientRepository patientRepository) {
         this.createAppointmentValidations = createAppointmentValidations;
         this.statusPendingValidations = statusPendingValidations;
         this.idValidations = idValidations;
         this.appointmentRepository = appointmentRepository;
         this.scheduleRepository = scheduleRepository;
+        this.patientRepository = patientRepository;
     }
 
     @Transactional
-    public Appointment creatAppointment(UUID scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+    public Appointment creatAppointment(UUID scheduleId, UUID patientId) {
+        Schedule schedule = scheduleRepository.findWithLockById(scheduleId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        createAppointmentValidations.forEach(v -> v.validate(schedule));
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        createAppointmentValidations.forEach(v -> v.validate(schedule, patient));
+
 
         Appointment appointment = new Appointment();
         appointment.setStatus(AppointmentStatus.PENDING);
         appointment.setSchedule(schedule);
+        appointment.setPatient(patient);
         schedule.setAvailable(false);
 
         scheduleRepository.save(schedule);
