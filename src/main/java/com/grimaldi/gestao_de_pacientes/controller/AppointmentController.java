@@ -3,7 +3,6 @@ package com.grimaldi.gestao_de_pacientes.controller;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -27,8 +27,6 @@ public class Appointment {
     @GeneratedValue
     private UUID id;
     private UUID pacientId;
-    private LocalDate date;
-    private LocalTime time;
 
     @OneToOne
     @JoinColumn(name = "schedule_id", unique = true)

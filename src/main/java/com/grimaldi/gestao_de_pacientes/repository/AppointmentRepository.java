@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
-        List<Appointment> findByDateBetweenAndStatusIn(
-                LocalDate startDate,
-                LocalDate endDate,
-                List<AppointmentStatus> status
-        );
+    List<Appointment> findBySchedule_DateBetweenAndStatusIn(
+            LocalDate startDate,
+            LocalDate endDate,
+            List<AppointmentStatus> status
+    );
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ValidateScheduleAvailableImpl implements CreateAppointmentValidation {
     @Override
     public void validate(Schedule schedule) {
-        if(schedule.isAvailable() == true) {
+        if(schedule.isAvailable() == false) {
             throw new ScheduleUnavailableException("Horário Indisponível");
         }
     }

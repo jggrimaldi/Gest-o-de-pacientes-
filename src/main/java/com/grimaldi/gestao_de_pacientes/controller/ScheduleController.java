@@ -6,7 +6,6 @@ import com.grimaldi.gestao_de_pacientes.dto.UpdateAvailableRequest;
 import com.grimaldi.gestao_de_pacientes.dto.UpdateScheduleRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.service.ScheduleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
