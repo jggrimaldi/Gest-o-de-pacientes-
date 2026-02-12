@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/horarios")
 public class ScheduleController {
 
-    public ScheduleService service;
+    public final ScheduleService service;
 
     public ScheduleController(ScheduleService service) {
         this.service = service;

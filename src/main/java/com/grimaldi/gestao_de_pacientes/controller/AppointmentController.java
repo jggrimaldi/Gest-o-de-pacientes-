@@ -1,8 +1,10 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,19 +16,17 @@ import java.util.UUID;
 @RequestMapping(value = "/consultas")
 public class AppointmentController {
 
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
 
     public AppointmentController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
-    @PostMapping("/{scheduleId}")
-    public ResponseEntity<AppointmentResponse> CreatAppointment(@PathVariable UUID scheduleId) {
-        Appointment appointment = appointmentService.creatAppointment(scheduleId);
+    @PostMapping
+    public ResponseEntity<AppointmentResponse> CreatAppointment(@Valid @RequestBody AppointmentRequest request) {
+        Appointment appointment = appointmentService.creatAppointment(request.scheduleId(), request.patientId());
 
-        AppointmentResponse response = new AppointmentResponse(
-                appointment.getId(), appointment.getSchedule().getDate(), appointment.getSchedule().getTime(), appointment.getStatus(), scheduleId);
-
+        AppointmentResponse response = new AppointmentResponse(appointment);
         return ResponseEntity.status(201).body(response);
     }
 
@@ -47,6 +47,11 @@ public class AppointmentController {
     @PatchMapping("/{appointmentId}")
     public ResponseEntity<AppointmentResponse> confirmAppointment(@PathVariable UUID appointmentId) {
         return ResponseEntity.ok(appointmentService.confirmAppointment(appointmentId));
+    }
+
+    @PatchMapping("/{appointmentId}/cancelar")
+    public ResponseEntity<AppointmentResponse> cancelAppointment(@PathVariable UUID appointmentId) {
+        return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
     }
 
     @DeleteMapping("/{appointmentId}")

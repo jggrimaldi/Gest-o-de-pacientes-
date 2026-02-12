@@ -84,7 +84,7 @@ public class AppointmentService {
     public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
         List<AppointmentStatus> validStatus = List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED);
 
-        List<Appointment> agenda = appointmentRepository.findBySchedule_DateBetweenAndStatusIn(startDate, endDate, validStatus);
+        List<Appointment> agenda = appointmentRepository.findBySchedule_DateBetweenAndStatusInOrderByScheduleDateAscScheduleTimeAsc(startDate, endDate, validStatus);
 
         return agenda.stream()
                 .map(AppointmentResponse::new)
@@ -103,12 +103,23 @@ public class AppointmentService {
     }
 
     @Transactional
+    public AppointmentResponse cancelAppointment(UUID appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        statusPendingValidations.forEach(v -> v.validate(appointment));
+
+        appointment.setStatus(AppointmentStatus.CANCELED);
+        appointment.getSchedule().setAvailable(true);
+        scheduleRepository.save(appointment.getSchedule());
+        return new AppointmentResponse(appointmentRepository.save(appointment));
+    }
+
+    @Transactional
     public void delete(UUID appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        appointment.getSchedule().setAvailable(true);
-        scheduleRepository.save(appointment.getSchedule());
         appointmentRepository.delete(appointment);
     }
 }

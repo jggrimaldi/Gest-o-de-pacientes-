@@ -10,7 +10,8 @@ import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
-    List<Appointment> findBySchedule_DateBetweenAndStatusIn(
+    //para ordenar automaticamente por horário
+    List<Appointment> findBySchedule_DateBetweenAndStatusInOrderByScheduleDateAscScheduleTimeAsc(
             LocalDate startDate,
             LocalDate endDate,
             List<AppointmentStatus> status
