@@ -1,16 +1,14 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
-import com.grimaldi.gestao_de_pacientes.entity.Schedule;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
-import com.grimaldi.gestao_de_pacientes.repository.ScheduleRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
-import com.grimaldi.gestao_de_pacientes.service.validation.IdValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.StatusPendingValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,38 +23,29 @@ public class AppointmentService {
 
     private final List<CreateAppointmentValidation> createAppointmentValidations;
     private final List<StatusPendingValidation> statusPendingValidations;
-    private final List<IdValidation> idValidations;
     private final AppointmentRepository appointmentRepository;
-    private final ScheduleRepository scheduleRepository;
     private final PatientRepository patientRepository;
 
-    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, List<IdValidation> idValidations, AppointmentRepository appointmentRepository, ScheduleRepository scheduleRepository, PatientRepository patientRepository) {
+    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
         this.createAppointmentValidations = createAppointmentValidations;
         this.statusPendingValidations = statusPendingValidations;
-        this.idValidations = idValidations;
         this.appointmentRepository = appointmentRepository;
-        this.scheduleRepository = scheduleRepository;
         this.patientRepository = patientRepository;
     }
 
     @Transactional
-    public Appointment creatAppointment(UUID scheduleId, UUID patientId) {
-        Schedule schedule = scheduleRepository.findWithLockById(scheduleId)
+    public Appointment creatAppointment(AppointmentRequest request) {
+        Patient patient = patientRepository.findById(request.patientId())
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
-
-        createAppointmentValidations.forEach(v -> v.validate(schedule, patient));
+        createAppointmentValidations.forEach(v -> v.validate(request));
 
 
         Appointment appointment = new Appointment();
         appointment.setStatus(AppointmentStatus.PENDING);
-        appointment.setSchedule(schedule);
         appointment.setPatient(patient);
-        schedule.setAvailable(false);
-
-        scheduleRepository.save(schedule);
+        appointment.setDate(request.date());
+        appointment.setTitle(request.title());
 
         return appointmentRepository.save(appointment);
     }
@@ -81,10 +70,33 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
-        List<AppointmentStatus> validStatus = List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED);
+    public List<AppointmentResponse> findByPatient(UUID patientId) {
+        // Valida se o paciente existe antes de buscar
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        List<Appointment> agenda = appointmentRepository.findBySchedule_DateBetweenAndStatusInOrderByScheduleDateAscScheduleTimeAsc(startDate, endDate, validStatus);
+        return appointmentRepository.findByPatientIdOrderByDateDesc(patientId)
+                .stream()
+                .map(AppointmentResponse::new)
+                .toList();
+    }
+
+    @Transactional
+    public  AppointmentResponse UpdateNotePad(UUID appointmentId, String note, String imageUrl) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        appointment.setNotes(note);
+        appointment.setImageUrl(imageUrl);
+
+        return new AppointmentResponse(appointmentRepository.save(appointment));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
+        List<AppointmentStatus> validStatus = List.of(AppointmentStatus.PENDING, AppointmentStatus.FINISHED);
+
+        List<Appointment> agenda = appointmentRepository.findByDateBetweenAndStatusInOrderByDateAsc(startDate, endDate, validStatus);
 
         return agenda.stream()
                 .map(AppointmentResponse::new)
@@ -92,13 +104,13 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentResponse confirmAppointment(UUID appointmentId) {
+    public AppointmentResponse finishAppointment(UUID appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
         statusPendingValidations.forEach(v -> v.validate(appointment));
 
-        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        appointment.setStatus(AppointmentStatus.FINISHED);
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
 
@@ -110,8 +122,6 @@ public class AppointmentService {
         statusPendingValidations.forEach(v -> v.validate(appointment));
 
         appointment.setStatus(AppointmentStatus.CANCELED);
-        appointment.getSchedule().setAvailable(true);
-        scheduleRepository.save(appointment.getSchedule());
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
 

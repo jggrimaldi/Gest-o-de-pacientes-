@@ -3,7 +3,6 @@ package com.grimaldi.gestao_de_pacientes.exception.handler;
 import com.grimaldi.gestao_de_pacientes.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,30 +34,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(ScheduleUnavailableException.class)
-    public ResponseEntity<Map<String, Object>> handleScheduleUnavailable(ScheduleUnavailableException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", 400,
-                        "error", "Bad Request",
-                        "message", ex.getMessage()
-                ));
-    }
 
-    @ExceptionHandler(PastDateAndTimeException.class)
-    public ResponseEntity<Map<String, Object>> handlePastDate(PastDateAndTimeException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", 400,
-                        "error", "Bad Request",
-                        "message", ex.getMessage()
-                ));
-    }
-
-    @ExceptionHandler(AvailableNullException.class)
-    public ResponseEntity<Map<String, Object>> handleAvailableNull(AvailableNullException ex) {
+    @ExceptionHandler(PastDateException.class)
+    public ResponseEntity<Map<String, Object>> handlePastDate(PastDateException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),

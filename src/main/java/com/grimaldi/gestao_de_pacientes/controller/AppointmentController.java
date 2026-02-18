@@ -24,7 +24,7 @@ public class AppointmentController {
 
     @PostMapping
     public ResponseEntity<AppointmentResponse> CreatAppointment(@Valid @RequestBody AppointmentRequest request) {
-        Appointment appointment = appointmentService.creatAppointment(request.scheduleId(), request.patientId());
+        Appointment appointment = appointmentService.creatAppointment(request);
 
         AppointmentResponse response = new AppointmentResponse(appointment);
         return ResponseEntity.status(201).body(response);
@@ -46,7 +46,7 @@ public class AppointmentController {
     }
     @PatchMapping("/{appointmentId}")
     public ResponseEntity<AppointmentResponse> confirmAppointment(@PathVariable UUID appointmentId) {
-        return ResponseEntity.ok(appointmentService.confirmAppointment(appointmentId));
+        return ResponseEntity.ok(appointmentService.finishAppointment(appointmentId));
     }
 
     @PatchMapping("/{appointmentId}/cancelar")

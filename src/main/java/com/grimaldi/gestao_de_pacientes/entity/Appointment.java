@@ -31,12 +31,19 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @OneToOne
-    @JoinColumn(name = "schedule_id", unique = true)
-    private Schedule schedule;
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
+
+    @Lob
+    private String notes;
+
+    private String imageUrl;
 
     //Auditoria, o spring faz automatico
     @CreatedDate
