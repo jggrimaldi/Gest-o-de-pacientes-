@@ -23,17 +23,6 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(PatientDuplicateAppointmentException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicateAppointment(PatientDuplicateAppointmentException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT) // Código 409 é o ideal para duplicidade
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", 409,
-                        "error", "Conflict",
-                        "message", ex.getMessage()
-                ));
-    }
-
 
     @ExceptionHandler(PastDateException.class)
     public ResponseEntity<Map<String, Object>> handlePastDate(PastDateException ex) {
