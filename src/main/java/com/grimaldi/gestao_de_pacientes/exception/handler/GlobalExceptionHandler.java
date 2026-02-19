@@ -35,7 +35,18 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(PastDateException.class)
+    @ExceptionHandler(StatusNotPendingException.class)
+    public ResponseEntity<Map<String, Object>> handleStatusPending(StatusNotPendingException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "status", 400,
+                        "error", "Bad Request",
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(DuplicateCpfException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicateCpf(DuplicateCpfException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of(
@@ -46,7 +57,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(PastDateException.class)
+    @ExceptionHandler(DuplicatePhoneException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicatePhone(DuplicatePhoneException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of(
