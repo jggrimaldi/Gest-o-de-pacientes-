@@ -4,7 +4,7 @@ import com.grimaldi.gestao_de_pacientes.entity.Patient;
 
 import java.util.UUID;
 
-public record PatienteResponse(
+public record PatientResponse(
         UUID id,
         String name,
         String cpf,
@@ -13,7 +13,7 @@ public record PatienteResponse(
         String note,
         String imageUrl
     ) {
-    public PatienteResponse(Patient patient) {
+    public PatientResponse(Patient patient) {
         this(
                 patient.getId(),
                 patient.getName(),
