@@ -29,5 +29,13 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
+    public List<PatientResponse> findAll(){
+        List<Patient> patients = patientRepository.findAll();
+
+        //Transforma a lista em uma esteira, transforma as entidades em objetos DTO e transforma em lista
+        return patients.stream()
+                .map(PatientResponse::new)
+                .toList();
+    }
 
 }
