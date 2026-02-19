@@ -5,7 +5,7 @@ import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
-import org.springframework.data.annotation.Transient;
+import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +16,16 @@ import java.util.UUID;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final List<CreatePatientValidation> createPatientValidations;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, List<CreatePatientValidation> createPatientValidations) {
         this.patientRepository = patientRepository;
+        this.createPatientValidations = createPatientValidations;
     }
 
     @Transactional
     public Patient creatPatient(PatientRequest request) {
+        createPatientValidations.forEach(v-> v.validate(request));
         Patient patient = new Patient();
 
         patient.setName(request.name());
@@ -60,5 +63,10 @@ public class PatientService {
         patient.setImageUrl(imageUrl);
 
         return new PatientResponse(patientRepository.save(patient));
+    }
+
+    @Transactional
+    public void delete(UUID patientId) {
+        patientRepository.deleteById(patientId);
     }
 }
