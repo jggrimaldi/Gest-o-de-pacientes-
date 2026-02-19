@@ -1,5 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentNoteUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
@@ -44,6 +45,12 @@ public class AppointmentController {
     public ResponseEntity<AppointmentResponse> findById(@PathVariable UUID appointmentId) {
         return ResponseEntity.ok(appointmentService.findById(appointmentId));
     }
+
+    @PatchMapping("/{appointmentId}/anotacao")
+    public  ResponseEntity<AppointmentResponse> UpdateNotePad(@PathVariable UUID appointmentId , @RequestBody AppointmentNoteUpdateRequest updateRequest) {
+        return ResponseEntity.ok(appointmentService.updateNotePad(appointmentId, updateRequest));
+    }
+
     @PatchMapping("/{appointmentId}")
     public ResponseEntity<AppointmentResponse> confirmAppointment(@PathVariable UUID appointmentId) {
         return ResponseEntity.ok(appointmentService.finishAppointment(appointmentId));

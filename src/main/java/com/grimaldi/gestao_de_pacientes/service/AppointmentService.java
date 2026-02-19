@@ -1,7 +1,9 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentNoteUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
+import com.grimaldi.gestao_de_pacientes.dto.AppointmentUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
@@ -82,15 +84,21 @@ public class AppointmentService {
     }
 
     @Transactional
-    public  AppointmentResponse UpdateNotePad(UUID appointmentId, String note, String imageUrl) {
+    public  AppointmentResponse updateNotePad(UUID appointmentId, AppointmentNoteUpdateRequest updateRequest){
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        appointment.setNotes(note);
-        appointment.setImageUrl(imageUrl);
+        //Verifica se foi recebido algo no DTO
+        if (updateRequest.notes() != null) {
+            appointment.setNotes(updateRequest.notes());
+        }
+        if (updateRequest.imageUrl() != null) {
+            appointment.setImageUrl(updateRequest.imageUrl());
+        }
 
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
+
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
