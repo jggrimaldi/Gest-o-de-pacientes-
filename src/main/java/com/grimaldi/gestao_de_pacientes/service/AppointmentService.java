@@ -99,6 +99,21 @@ public class AppointmentService {
         return new AppointmentResponse(appointmentRepository.save(appointment));
     }
 
+    @Transactional
+    public AppointmentResponse updateDetails(UUID appointmentId,AppointmentUpdateRequest updateRequest) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        //Verifica se foi recebido algo no DTO
+        if (updateRequest.title() != null) {
+            appointment.setTitle(updateRequest.title());
+        }
+        if (updateRequest.date() != null) {
+            appointment.setDate(updateRequest.date());
+        }
+
+        return new AppointmentResponse(appointmentRepository.save(appointment));
+    }
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
