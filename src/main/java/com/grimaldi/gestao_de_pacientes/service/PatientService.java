@@ -1,11 +1,15 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
+import com.grimaldi.gestao_de_pacientes.dto.PatientNoteUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
+import com.grimaldi.gestao_de_pacientes.dto.PatientUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
+import com.grimaldi.gestao_de_pacientes.service.validation.impl.ValidateDuplicatePhoneImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,12 +59,38 @@ public class PatientService {
     }
 
     @Transactional
-    public PatientResponse UpdatePatientNotes(UUID patientId, String notes, String imageUrl) {
+    public PatientResponse UpdatePatientNotes(UUID patientId, PatientNoteUpdateRequest updateRequest){
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IdNotExistException("Id não existe"));
 
-        patient.setNotes(notes);
-        patient.setImageUrl(imageUrl);
+        if (updateRequest.notes() != null) {
+            patient.setNotes(updateRequest.notes());
+        }
+        if (updateRequest.imageUrl() != null) {
+            patient.setImageUrl(updateRequest.imageUrl());
+        }
+
+        return new PatientResponse(patientRepository.save(patient));
+    }
+
+    @Transactional
+    public PatientResponse UpdateDetails(UUID patientId, PatientUpdateRequest updateRequest) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IdNotExistException("Id não existe"));
+
+        //So valida se n for nulo e n for igual ao antigo telefone
+        if (updateRequest.phone() != null && !updateRequest.phone().equals(patient.getPhone())) {
+            if (patientRepository.findByPhone(updateRequest.phone()).isPresent()) {
+                throw new DuplicatePhoneException("Este telefone já está em uso por outro paciente");
+            }
+            patient.setPhone(updateRequest.phone());
+        }
+        if (updateRequest.name() != null) {
+            patient.setName(updateRequest.name());
+        }
+        if (updateRequest.age() != null) {
+            patient.setAge(updateRequest.age());
+        }
 
         return new PatientResponse(patientRepository.save(patient));
     }
