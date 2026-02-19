@@ -51,4 +51,14 @@ public class PatientService {
         return new PatientResponse(patient);
     }
 
+    @Transactional
+    public PatientResponse UpdatePatientNotes(UUID patientId, String notes, String imageUrl) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IdNotExistException("Id não existe"));
+
+        patient.setNotes(notes);
+        patient.setImageUrl(imageUrl);
+
+        return new PatientResponse(patientRepository.save(patient));
+    }
 }
