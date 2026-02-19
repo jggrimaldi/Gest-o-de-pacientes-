@@ -10,7 +10,7 @@ public record PatientResponse(
         String cpf,
         String phone,
         Integer age,
-        String note,
+        String notes,
         String imageUrl
     ) {
     public PatientResponse(Patient patient) {
