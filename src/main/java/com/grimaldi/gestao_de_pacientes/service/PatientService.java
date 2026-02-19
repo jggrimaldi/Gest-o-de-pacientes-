@@ -9,7 +9,6 @@ import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
-import com.grimaldi.gestao_de_pacientes.service.validation.impl.ValidateDuplicatePhoneImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,7 @@ public class PatientService {
     }
 
     @Transactional
-    public Patient creatPatient(PatientRequest request) {
+    public Patient createPatient(PatientRequest request) {
         createPatientValidations.forEach(v-> v.validate(request));
         Patient patient = new Patient();
 
