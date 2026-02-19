@@ -28,5 +28,10 @@ public class Patient {
     @Column(nullable = false, unique = true)
     private String phone; // Chave para o fluxo do WhatsApp
 
-    private String email;
+    private Integer age;
+
+    @Lob
+    private String notes;
+
+    private String imageUrl;
 }
