@@ -3,6 +3,7 @@ package com.grimaldi.gestao_de_pacientes.controller;
 import com.grimaldi.gestao_de_pacientes.dto.PatientNoteUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
+import com.grimaldi.gestao_de_pacientes.dto.PatientUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.service.PatientService;
 import jakarta.validation.Valid;
@@ -42,6 +43,11 @@ public class PatientController {
 
     @PatchMapping("/{patientId}/anotacao")
     public ResponseEntity<PatientResponse> updateNotes(@PathVariable UUID patientId, PatientNoteUpdateRequest updateRequest) {
-        return ResponseEntity.ok(patientService.UpdatePatientNotes(patientId, updateRequest));
+        return ResponseEntity.ok(patientService.updatePatientNotes(patientId, updateRequest));
+    }
+
+    @PatchMapping("/{patientId}/detalhes")
+    public ResponseEntity<PatientResponse> updateDetails(@PathVariable UUID patientId, PatientUpdateRequest updateRequest) {
+        return ResponseEntity.ok(patientService.updateDetails(patientId, updateRequest));
     }
 }

@@ -58,7 +58,7 @@ public class PatientService {
     }
 
     @Transactional
-    public PatientResponse UpdatePatientNotes(UUID patientId, PatientNoteUpdateRequest updateRequest){
+    public PatientResponse updatePatientNotes(UUID patientId, PatientNoteUpdateRequest updateRequest){
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IdNotExistException("Id não existe"));
 
@@ -73,7 +73,7 @@ public class PatientService {
     }
 
     @Transactional
-    public PatientResponse UpdateDetails(UUID patientId, PatientUpdateRequest updateRequest) {
+    public PatientResponse updateDetails(UUID patientId, PatientUpdateRequest updateRequest) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IdNotExistException("Id não existe"));
 
