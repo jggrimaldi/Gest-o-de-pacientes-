@@ -1,5 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
+import com.grimaldi.gestao_de_pacientes.dto.PatientNoteUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientRequest;
 import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
@@ -35,9 +36,12 @@ public class PatientController {
     }
 
     @GetMapping("/{patientId}")
-    public ResponseEntity<PatientResponse> findById(UUID patientId) {
+    public ResponseEntity<PatientResponse> findById(@PathVariable UUID patientId) {
         return ResponseEntity.ok(patientService.findById(patientId));
     }
 
-
+    @PatchMapping("/{patientId}/anotacao")
+    public ResponseEntity<PatientResponse> updateNotes(@PathVariable UUID patientId, PatientNoteUpdateRequest updateRequest) {
+        return ResponseEntity.ok(patientService.UpdatePatientNotes(patientId, updateRequest));
+    }
 }
