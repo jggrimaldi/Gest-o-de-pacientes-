@@ -6,7 +6,9 @@ import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
 import com.grimaldi.gestao_de_pacientes.dto.PatientUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
+import com.grimaldi.gestao_de_pacientes.exception.EntityInUseException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
+import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ import java.util.UUID;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
     private final List<CreatePatientValidation> createPatientValidations;
 
-    public PatientService(PatientRepository patientRepository, List<CreatePatientValidation> createPatientValidations) {
+    public PatientService(PatientRepository patientRepository, AppointmentRepository appointmentRepository, List<CreatePatientValidation> createPatientValidations) {
         this.patientRepository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
         this.createPatientValidations = createPatientValidations;
     }
 
@@ -96,6 +100,17 @@ public class PatientService {
 
     @Transactional
     public void delete(UUID patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IdNotExistException("Id não existe"));
+
+        //Verifica se o paciente possui consultas
+        Boolean hasAppointment = appointmentRepository.existsByPatientId(patientId);
+
+        //se possui, lança execption
+        if (hasAppointment) {
+            throw new EntityInUseException("O paciente possui consultas e não pode ser excluido");
+        }
+
         patientRepository.deleteById(patientId);
     }
 }
