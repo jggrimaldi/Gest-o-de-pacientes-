@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record AppointmentRequest(@NotNull UUID patientId, @NotNull String title, @NotBlank LocalDate date) {
+public record AppointmentRequest(@NotNull UUID patientId, @NotBlank String title, @NotBlank LocalDate date) {
 }

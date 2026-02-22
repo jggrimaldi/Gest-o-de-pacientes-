@@ -1,4 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.dto;
 
-public record AppointmentNoteUpdateRequest(String notes, String imageUrl) {
+import jakarta.validation.constraints.NotBlank;
+
+public record AppointmentNoteUpdateRequest(@NotBlank String notes, @NotBlank String imageUrl) {
 }
