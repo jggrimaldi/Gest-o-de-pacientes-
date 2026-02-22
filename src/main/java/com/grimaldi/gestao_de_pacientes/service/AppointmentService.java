@@ -5,13 +5,17 @@ import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
 import com.grimaldi.gestao_de_pacientes.dto.AppointmentUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
+import com.grimaldi.gestao_de_pacientes.repository.DentistRepository;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
 import com.grimaldi.gestao_de_pacientes.service.validation.StatusPendingValidation;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +31,14 @@ public class AppointmentService {
     private final List<StatusPendingValidation> statusPendingValidations;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
+    private final DentistRepository dentistRepository;
 
-    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, AppointmentRepository appointmentRepository, PatientRepository patientRepository, DentistService dentistService, DentistRepository dentistRepository) {
         this.createAppointmentValidations = createAppointmentValidations;
         this.statusPendingValidations = statusPendingValidations;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.dentistRepository = dentistRepository;
     }
 
     @Transactional
@@ -40,12 +46,16 @@ public class AppointmentService {
         Patient patient = patientRepository.findById(request.patientId())
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
+        Dentist dentist = dentistRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
+
         createAppointmentValidations.forEach(v -> v.validate(request));
 
 
         Appointment appointment = new Appointment();
         appointment.setStatus(AppointmentStatus.PENDING);
         appointment.setPatient(patient);
+        appointment.setDentist(dentist);
         appointment.setDate(request.date());
         appointment.setTitle(request.title());
 
@@ -54,8 +64,9 @@ public class AppointmentService {
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> findAll() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         //Busca no banco
-        List<Appointment> appointments = appointmentRepository.findAll();
+        List<Appointment> appointments = appointmentRepository.findAllByDentistEmail(email);
 
         //transforma a entidade em novos objetos Response e devolve para lista
         return appointments.stream()

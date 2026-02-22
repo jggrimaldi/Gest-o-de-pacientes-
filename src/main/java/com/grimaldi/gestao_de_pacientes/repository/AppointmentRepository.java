@@ -21,5 +21,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByPatientIdOrderByDateDesc(UUID patientId);
 
     Boolean existsByPatientId(UUID patientId);
+
+    List<Appointment> findAllByDentistEmail(String email);
 }
 

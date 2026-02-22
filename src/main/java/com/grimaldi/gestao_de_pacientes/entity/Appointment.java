@@ -21,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "appointment", schema = "public")
 public class Appointment {
 
     @Id
@@ -30,6 +31,10 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    @ManyToOne
+    @JoinColumn(name = "dentist_id", nullable = false)
+    private Dentist dentist;
 
     @Column(nullable = false)
     private String title;

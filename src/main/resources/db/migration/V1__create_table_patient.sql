@@ -7,4 +7,4 @@ CREATE TABLE patient (
     age INTEGER,
     notes TEXT,
     image_url VARCHAR(255)
-)
+);

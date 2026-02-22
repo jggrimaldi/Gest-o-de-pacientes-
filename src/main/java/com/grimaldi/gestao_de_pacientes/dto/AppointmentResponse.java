@@ -16,6 +16,8 @@ public record AppointmentResponse(
         AppointmentStatus status,
         String patientName,
         String patientPhone,
+        String dentistName,
+        UUID dentistId,
         LocalDateTime updatedAt // Importante para a dentista saber quando a nota foi escrita
 ) {
     // Construtor compacto para transformar a Entity em DTO
@@ -29,6 +31,8 @@ public record AppointmentResponse(
                 appointment.getStatus(),
                 appointment.getPatient().getName(),
                 appointment.getPatient().getPhone(),
+                appointment.getDentist().getName(),
+                appointment.getDentist().getId(),
                 appointment.getUpdatedAt()
         );
     }
