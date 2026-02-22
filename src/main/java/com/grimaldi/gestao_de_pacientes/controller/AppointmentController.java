@@ -48,7 +48,7 @@ public class AppointmentController {
     }
 
     @PatchMapping("/{appointmentId}/anotacao")
-    public  ResponseEntity<AppointmentResponse> UpdateNotePad(@PathVariable UUID appointmentId , @RequestBody AppointmentNoteUpdateRequest updateRequest) {
+    public  ResponseEntity<AppointmentResponse> updateNotePad(@PathVariable UUID appointmentId , @RequestBody AppointmentNoteUpdateRequest updateRequest) {
         return ResponseEntity.ok(appointmentService.updateNotePad(appointmentId, updateRequest));
     }
 
