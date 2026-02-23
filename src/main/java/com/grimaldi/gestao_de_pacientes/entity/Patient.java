@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +19,13 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "dentist_id")
+    private Dentist dentist;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
 
     @Column(nullable = false)
     private String name;

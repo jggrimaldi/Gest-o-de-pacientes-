@@ -11,9 +11,11 @@ import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
@@ -100,15 +102,21 @@ public class PatientService {
 
     @Transactional
     public void delete(UUID patientId) {
+        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // 2. Busca o paciente (ou usa um método que valide o dono)
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IdNotExistException("Id não existe"));
 
-        //Verifica se o paciente possui consultas
-        Boolean hasAppointment = appointmentRepository.existsByPatientId(patientId);
+        // 3. TRAVA DE SEGURANÇA: Valida se o paciente pertence a quem está logado
+        if (!patient.getDentist().getEmail().equals(loggedEmail)) {
+            throw new AccessDeniedException("Você não tem permissão para excluir este paciente");
+        }
 
-        //se possui, lança execption
+        // 4. Valida integridade referencial
+        Boolean hasAppointment = appointmentRepository.existsByPatientId(patientId);
         if (hasAppointment) {
-            throw new EntityInUseException("O paciente possui consultas e não pode ser excluido");
+            throw new EntityInUseException("O paciente possui consultas e não pode ser excluído");
         }
 
         patientRepository.deleteById(patientId);

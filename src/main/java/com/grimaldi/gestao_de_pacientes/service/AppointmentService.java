@@ -185,6 +185,7 @@ public class AppointmentService {
 
         validateOwnership(appointment);
 
+
         appointmentRepository.delete(appointment);
     }
 
