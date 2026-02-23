@@ -8,6 +8,7 @@ import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
+import com.grimaldi.gestao_de_pacientes.exception.AppointmentOwnershipException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.DentistRepository;
@@ -78,7 +79,7 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public AppointmentResponse findById(UUID appointmentId) throws AccessDeniedException {
+    public AppointmentResponse findById(UUID appointmentId){
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
@@ -94,16 +95,20 @@ public class AppointmentService {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
-        return appointmentRepository.findByPatientIdOrderByDateDesc(patientId)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return appointmentRepository.findByPatientIdAndDentistEmail(patientId, email)
                 .stream()
                 .map(AppointmentResponse::new)
                 .toList();
     }
 
     @Transactional
-    public  AppointmentResponse updateNotePad(UUID appointmentId, AppointmentNoteUpdateRequest updateRequest){
+    public  AppointmentResponse updateNotePad(UUID appointmentId, AppointmentNoteUpdateRequest updateRequest) throws AccessDeniedException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        validateOwnership(appointment);
 
         //Verifica se foi recebido algo no DTO
         if (updateRequest.notes() != null) {
@@ -121,6 +126,8 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
+        validateOwnership(appointment);
+
         //Verifica se foi recebido algo no DTO
         if (updateRequest.title() != null) {
             appointment.setTitle(updateRequest.title());
@@ -134,9 +141,11 @@ public class AppointmentService {
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> getAgenda(LocalDate startDate, LocalDate endDate) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<AppointmentStatus> validStatus = List.of(AppointmentStatus.PENDING, AppointmentStatus.FINISHED);
 
-        List<Appointment> agenda = appointmentRepository.findByDateBetweenAndStatusInOrderByDateAsc(startDate, endDate, validStatus);
+        //Define a regra de negócio dos status (Agenda só mostra Pendentes e Finalizados)
+        List<Appointment> agenda = appointmentRepository.findByDateBetweenAndStatusInAndDentistEmailOrderByDateAsc(startDate, endDate, validStatus, email);
 
         return agenda.stream()
                 .map(AppointmentResponse::new)
@@ -147,6 +156,8 @@ public class AppointmentService {
     public AppointmentResponse finishAppointment(UUID appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        validateOwnership(appointment);
 
         statusPendingValidations.forEach(v -> v.validate(appointment));
 
@@ -159,6 +170,8 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
+        validateOwnership(appointment);
+
         statusPendingValidations.forEach(v -> v.validate(appointment));
 
         appointment.setStatus(AppointmentStatus.CANCELED);
@@ -170,15 +183,18 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
+        validateOwnership(appointment);
+
         appointmentRepository.delete(appointment);
     }
 
-    private void validateOwnership(Appointment appointment) throws AccessDeniedException {
+    //Verificar que  dentista está logado
+    private void validateOwnership(Appointment appointment) {
         String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (!appointment.getDentist().getEmail().equals(loggedEmail)) {
             // Lance uma exceção que resulte em 403 Forbidden
-            throw new AccessDeniedException("Você não tem permissão para acessar esta consulta");
+            throw new AppointmentOwnershipException("Você não tem permissão para acessar esta consulta");
         }
     }
 }
