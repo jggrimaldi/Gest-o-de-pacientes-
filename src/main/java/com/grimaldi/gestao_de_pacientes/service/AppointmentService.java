@@ -20,8 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.nio.file.AccessDeniedException;
+import java.rmi.AccessException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -75,9 +78,12 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public AppointmentResponse findById(UUID appointmentId) {
+    public AppointmentResponse findById(UUID appointmentId) throws AccessDeniedException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        // Valida se a consulta pertence à dentista logada
+        validateOwnership(appointment);
 
         return new AppointmentResponse(appointment);
     }
@@ -165,5 +171,14 @@ public class AppointmentService {
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
         appointmentRepository.delete(appointment);
+    }
+
+    private void validateOwnership(Appointment appointment) throws AccessDeniedException {
+        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (!appointment.getDentist().getEmail().equals(loggedEmail)) {
+            // Lance uma exceção que resulte em 403 Forbidden
+            throw new AccessDeniedException("Você não tem permissão para acessar esta consulta");
+        }
     }
 }
