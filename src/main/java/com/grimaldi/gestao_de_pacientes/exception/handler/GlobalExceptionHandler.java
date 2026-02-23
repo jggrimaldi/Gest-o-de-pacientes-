@@ -67,4 +67,40 @@ public class GlobalExceptionHandler {
                         "message", ex.getMessage()
                 ));
     }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(DuplicateEmailException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "status", 409,
+                        "error", "Conflict",
+                        "message", ex.getMessage()
+                ));
+    }
+
+
+    @ExceptionHandler(AppointmentOwnershipException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(AppointmentOwnershipException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "status", 403,
+                        "error", "Forbidden",
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(EntityInUseException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(EntityInUseException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "status", 409,
+                        "error", "Conflict",
+                        "message", ex.getMessage()
+                ));
+    }
+
+
 }
