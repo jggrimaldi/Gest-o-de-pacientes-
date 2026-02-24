@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(DuplicateEmailException ex) {
+    public ResponseEntity<Map<String, Object>> handleDuplicateEmail(DuplicateEmailException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(AppointmentOwnershipException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(AppointmentOwnershipException ex) {
+    public ResponseEntity<Map<String, Object>> handleOwnership(AppointmentOwnershipException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityInUseException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicatePhone(EntityInUseException ex) {
+    public ResponseEntity<Map<String, Object>> handleInUse(EntityInUseException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
