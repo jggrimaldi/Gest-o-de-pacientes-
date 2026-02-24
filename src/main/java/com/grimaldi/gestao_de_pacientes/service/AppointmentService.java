@@ -8,7 +8,7 @@ import com.grimaldi.gestao_de_pacientes.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
-import com.grimaldi.gestao_de_pacientes.exception.AppointmentOwnershipException;
+import com.grimaldi.gestao_de_pacientes.exception.OwnershipException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
 import com.grimaldi.gestao_de_pacientes.repository.AppointmentRepository;
 import com.grimaldi.gestao_de_pacientes.repository.DentistRepository;
@@ -21,11 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.nio.file.AccessDeniedException;
-import java.rmi.AccessException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -104,7 +101,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public  AppointmentResponse updateNotePad(UUID appointmentId, AppointmentNoteUpdateRequest updateRequest) throws AccessDeniedException {
+    public  AppointmentResponse updateNotePad(UUID appointmentId, AppointmentNoteUpdateRequest updateRequest) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
 
@@ -195,7 +192,7 @@ public class AppointmentService {
 
         if (!appointment.getDentist().getEmail().equals(loggedEmail)) {
             // Lance uma exceção que resulte em 403 Forbidden
-            throw new AppointmentOwnershipException("Você não tem permissão para acessar esta consulta");
+            throw new OwnershipException("Você não tem permissão para acessar esta consulta");
         }
     }
 }

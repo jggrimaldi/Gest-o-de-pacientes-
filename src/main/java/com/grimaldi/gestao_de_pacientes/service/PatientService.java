@@ -6,7 +6,7 @@ import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
 import com.grimaldi.gestao_de_pacientes.dto.PatientUpdateRequest;
 import com.grimaldi.gestao_de_pacientes.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.entity.Patient;
-import com.grimaldi.gestao_de_pacientes.exception.AppointmentOwnershipException;
+import com.grimaldi.gestao_de_pacientes.exception.OwnershipException;
 import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
 import com.grimaldi.gestao_de_pacientes.exception.EntityInUseException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;
@@ -118,7 +118,7 @@ public class PatientService {
     }
 
     @Transactional
-    public void delete(UUID patientId) throws AccessDeniedException {
+    public void delete(UUID patientId) {
         String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // Busca o paciente
@@ -127,7 +127,7 @@ public class PatientService {
 
         //Valida se o paciente pertence a quem está logado
         if (!patient.getDentist().getEmail().equals(loggedEmail)) {
-            throw new AccessDeniedException("Você não tem permissão para excluir este paciente");
+            throw new OwnershipException("Você não tem permissão para excluir este paciente");
         }
 
         // Valida integridade referencial
@@ -144,7 +144,7 @@ public class PatientService {
 
         if (!patient.getDentist().getEmail().equals(loggedEmail)) {
             // Lance uma exceção que resulte em 403 Forbidden
-            throw new AppointmentOwnershipException("Você não tem permissão para acessar esta consulta");
+            throw new OwnershipException("Você não tem permissão para acessar esta consulta");
         }
     }
 }

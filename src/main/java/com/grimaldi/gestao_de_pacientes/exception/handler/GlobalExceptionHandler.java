@@ -80,8 +80,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(AppointmentOwnershipException.class)
-    public ResponseEntity<Map<String, Object>> handleOwnership(AppointmentOwnershipException ex) {
+    @ExceptionHandler(OwnershipException.class)
+    public ResponseEntity<Map<String, Object>> handleOwnership(OwnershipException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityInUseException.class)
     public ResponseEntity<Map<String, Object>> handleInUse(EntityInUseException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
                         "status", 409,
