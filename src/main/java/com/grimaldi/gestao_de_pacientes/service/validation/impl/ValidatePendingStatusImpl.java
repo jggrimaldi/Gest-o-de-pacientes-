@@ -1,6 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
-import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.model.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import com.grimaldi.gestao_de_pacientes.exception.StatusNotPendingException;
 import com.grimaldi.gestao_de_pacientes.service.validation.StatusPendingValidation;

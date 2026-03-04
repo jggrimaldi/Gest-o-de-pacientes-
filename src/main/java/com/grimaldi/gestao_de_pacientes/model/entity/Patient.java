@@ -1,4 +1,4 @@
-package com.grimaldi.gestao_de_pacientes.entity;
+package com.grimaldi.gestao_de_pacientes.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

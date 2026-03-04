@@ -1,6 +1,5 @@
 package com.grimaldi.gestao_de_pacientes.security;
 
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.repository.DentistRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

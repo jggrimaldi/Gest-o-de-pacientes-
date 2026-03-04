@@ -1,7 +1,7 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
-import com.grimaldi.gestao_de_pacientes.dto.DentistRequest;
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
+import com.grimaldi.gestao_de_pacientes.model.dto.DentistRequest;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.exception.DuplicateEmailException;
 import com.grimaldi.gestao_de_pacientes.repository.DentistRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

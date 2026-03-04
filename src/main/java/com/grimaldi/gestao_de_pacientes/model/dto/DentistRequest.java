@@ -1,4 +1,4 @@
-package com.grimaldi.gestao_de_pacientes.dto;
+package com.grimaldi.gestao_de_pacientes.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

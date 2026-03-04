@@ -1,8 +1,8 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
-import com.grimaldi.gestao_de_pacientes.dto.DentistRequest;
-import com.grimaldi.gestao_de_pacientes.dto.DentistResponse;
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
+import com.grimaldi.gestao_de_pacientes.model.dto.DentistRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.DentistResponse;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.service.DentistService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

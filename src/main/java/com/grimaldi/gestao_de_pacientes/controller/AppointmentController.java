@@ -1,16 +1,15 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentNoteUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentNoteUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentResponse;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;

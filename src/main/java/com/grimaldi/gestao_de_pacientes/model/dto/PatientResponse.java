@@ -1,6 +1,6 @@
-package com.grimaldi.gestao_de_pacientes.dto;
+package com.grimaldi.gestao_de_pacientes.model.dto;
 
-import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.model.entity.Patient;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
-package com.grimaldi.gestao_de_pacientes.dto;
+package com.grimaldi.gestao_de_pacientes.model.dto;
 
-import com.grimaldi.gestao_de_pacientes.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.model.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 
 import java.time.LocalDate;

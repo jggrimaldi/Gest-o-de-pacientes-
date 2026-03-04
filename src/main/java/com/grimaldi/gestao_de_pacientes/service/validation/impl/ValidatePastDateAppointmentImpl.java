@@ -1,6 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentRequest;
 import com.grimaldi.gestao_de_pacientes.exception.PastDateException;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreateAppointmentValidation;
 import org.springframework.stereotype.Component;

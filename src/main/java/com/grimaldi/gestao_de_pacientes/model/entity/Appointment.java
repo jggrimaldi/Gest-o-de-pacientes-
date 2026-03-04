@@ -1,4 +1,4 @@
-package com.grimaldi.gestao_de_pacientes.entity;
+package com.grimaldi.gestao_de_pacientes.model.entity;
 
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import jakarta.persistence.*;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity

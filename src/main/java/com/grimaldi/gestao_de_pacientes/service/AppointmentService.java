@@ -1,12 +1,12 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentNoteUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentRequest;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentResponse;
-import com.grimaldi.gestao_de_pacientes.dto.AppointmentUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.entity.Appointment;
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
-import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentNoteUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentResponse;
+import com.grimaldi.gestao_de_pacientes.model.dto.AppointmentUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.entity.Appointment;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
+import com.grimaldi.gestao_de_pacientes.model.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import com.grimaldi.gestao_de_pacientes.exception.OwnershipException;
 import com.grimaldi.gestao_de_pacientes.exception.IdNotExistException;

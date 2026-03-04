@@ -1,12 +1,10 @@
 package com.grimaldi.gestao_de_pacientes.repository;
 
-import com.grimaldi.gestao_de_pacientes.entity.Appointment;
-import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.model.entity.Appointment;
 import com.grimaldi.gestao_de_pacientes.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 

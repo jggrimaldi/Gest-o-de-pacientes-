@@ -1,8 +1,6 @@
-package com.grimaldi.gestao_de_pacientes.dto;
+package com.grimaldi.gestao_de_pacientes.model.dto;
 
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
 
 import java.util.UUID;
 

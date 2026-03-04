@@ -1,6 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.repository;
 
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

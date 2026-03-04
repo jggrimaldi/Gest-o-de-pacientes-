@@ -1,7 +1,7 @@
 package com.grimaldi.gestao_de_pacientes.controller;
 
-import com.grimaldi.gestao_de_pacientes.dto.LoginRequest;
-import com.grimaldi.gestao_de_pacientes.dto.TokenResponse;
+import com.grimaldi.gestao_de_pacientes.model.dto.LoginRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.TokenResponse;
 import com.grimaldi.gestao_de_pacientes.security.JwtUtil;
 import com.grimaldi.gestao_de_pacientes.security.UserDetailsServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/auth")

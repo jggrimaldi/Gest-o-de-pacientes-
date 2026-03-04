@@ -1,11 +1,11 @@
 package com.grimaldi.gestao_de_pacientes.service;
 
-import com.grimaldi.gestao_de_pacientes.dto.PatientNoteUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.dto.PatientRequest;
-import com.grimaldi.gestao_de_pacientes.dto.PatientResponse;
-import com.grimaldi.gestao_de_pacientes.dto.PatientUpdateRequest;
-import com.grimaldi.gestao_de_pacientes.entity.Dentist;
-import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.model.dto.PatientNoteUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.PatientRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.PatientResponse;
+import com.grimaldi.gestao_de_pacientes.model.dto.PatientUpdateRequest;
+import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
+import com.grimaldi.gestao_de_pacientes.model.entity.Patient;
 import com.grimaldi.gestao_de_pacientes.exception.OwnershipException;
 import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
 import com.grimaldi.gestao_de_pacientes.exception.EntityInUseException;
@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 

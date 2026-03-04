@@ -1,6 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.repository;
 
-import com.grimaldi.gestao_de_pacientes.entity.Patient;
+import com.grimaldi.gestao_de_pacientes.model.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

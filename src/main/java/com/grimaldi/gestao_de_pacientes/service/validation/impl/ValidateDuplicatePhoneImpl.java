@@ -1,6 +1,6 @@
 package com.grimaldi.gestao_de_pacientes.service.validation.impl;
 
-import com.grimaldi.gestao_de_pacientes.dto.PatientRequest;
+import com.grimaldi.gestao_de_pacientes.model.dto.PatientRequest;
 import com.grimaldi.gestao_de_pacientes.exception.DuplicatePhoneException;
 import com.grimaldi.gestao_de_pacientes.repository.PatientRepository;
 import com.grimaldi.gestao_de_pacientes.service.validation.CreatePatientValidation;
