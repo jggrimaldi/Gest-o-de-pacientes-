@@ -33,19 +33,23 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DentistRepository dentistRepository;
+    private final PatientService patientService;
 
-    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, AppointmentRepository appointmentRepository, PatientRepository patientRepository, DentistService dentistService, DentistRepository dentistRepository) {
+    public AppointmentService(List<CreateAppointmentValidation> createAppointmentValidations, List<StatusPendingValidation> statusPendingValidations, AppointmentRepository appointmentRepository, PatientRepository patientRepository, DentistService dentistService, DentistRepository dentistRepository, PatientService patientService) {
         this.createAppointmentValidations = createAppointmentValidations;
         this.statusPendingValidations = statusPendingValidations;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
         this.dentistRepository = dentistRepository;
+        this.patientService = patientService;
     }
 
     @Transactional
     public Appointment creatAppointment(AppointmentRequest request) {
         Patient patient = patientRepository.findById(request.patientId())
                 .orElseThrow(() -> new IdNotExistException("Id não encontrado"));
+
+        patientService.validateOwnership(patient);
 
         Dentist dentist = dentistRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
