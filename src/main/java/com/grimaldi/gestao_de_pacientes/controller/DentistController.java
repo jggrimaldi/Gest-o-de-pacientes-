@@ -4,6 +4,9 @@ import com.grimaldi.gestao_de_pacientes.model.dto.DentistRequest;
 import com.grimaldi.gestao_de_pacientes.model.dto.DentistResponse;
 import com.grimaldi.gestao_de_pacientes.model.entity.Dentist;
 import com.grimaldi.gestao_de_pacientes.service.DentistService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/dentista")
+@Tag(name = "Dentista", description = "Operações relacionadas a dentista")
 public class DentistController {
 
     private final DentistService dentistService;
@@ -21,6 +25,7 @@ public class DentistController {
         this.dentistService = dentistService;
     }
 
+    @Operation(summary = "Criar dentista")
     @PostMapping
     public ResponseEntity<DentistResponse> createDentist(@Valid @RequestBody DentistRequest request) {
         Dentist dentist = dentistService.createDentist(request);
